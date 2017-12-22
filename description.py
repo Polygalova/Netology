@@ -1,4 +1,5 @@
-class AnimalsClass:
+# coding: utf-8
+class Animals:
     def __init__(self, name, age=0, size=4, is_hungry=False, tiredness=0):
         self.name = name
         self.age = age
@@ -23,54 +24,54 @@ class AnimalsClass:
             self.tiredness = 0
 
 
-class HoofedClass(AnimalsClass):
+class Hoofed(Animals):
     def __init__(self, name, age=0, size=4, is_hungry=False, tiredness=0, legs=4, tail=True):
         super().__init__(name, age, size, is_hungry, tiredness)
         self.legs = legs
         self.tail = tail
 
 
-class BirdsClass(AnimalsClass):
+class Birds(Animals):
     def __init__(self, name, age=0, size=2, is_hungry=False, tiredness=0, legs=2, plumage=True):
         super().__init__(name, age, size, is_hungry, tiredness)
         self.legs = legs
         self.plumage = plumage
 
 
-class CowsClass(HoofedClass):
+class Cows(Hoofed):
     pass
 
 
-class GoatsClass(HoofedClass):
+class Goats(Hoofed):
     pass
 
 
-class SheepClass(HoofedClass):
+class Sheep(Hoofed):
     pass
 
 
-class PigsClass(HoofedClass):
+class Pigs(Hoofed):
     pass
 
 
-class DucksClass(BirdsClass):
+class Ducks(Birds):
     pass
 
 
-class ChickenClass(BirdsClass):
+class Chicken(Birds):
     pass
 
 
-class GeeseClass(BirdsClass):
+class Geese(Birds):
     pass
 
 
-Donald_duck = DucksClass('Donald')
-Scrooge_McDuck = DucksClass('Scrooge', size=2)
+Donald_duck = Ducks('Donald')
+Scrooge_McDuck = Ducks('Scrooge', size=2)
 
-Nif_nif = PigsClass('Nif_nif', age=1)
-Naf_naf = PigsClass('Naf_naf', is_hungry=True)
-Nuf_nuf = PigsClass('Nuf_nuf')
+Nif_nif = Pigs('Nif_nif', age=1)
+Naf_naf = Pigs('Naf_naf', is_hungry=True)
+Nuf_nuf = Pigs('Nuf_nuf')
 
 Donald_duck.get_hungry()
 Nuf_nuf.get_tired(15)
