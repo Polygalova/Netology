@@ -3,22 +3,40 @@ import time
 import json
 
 
+def get_user_id(name_or_id, token):
+    '''Проверяем, существует ли пользователь и возвращаем его id, если он существует'''
+    params = {
+        'user_ids': name_or_id,
+        'access_token': token,
+        'version': 5.73
+    }
+    response = requests.get('https://api.vk.com/method/users.get', params)
+    try:
+        user = response.json()['response'][0]
+        if 'deactivated' not in user.keys():
+            num = user['uid']
+        else:
+            raise Exception
+    except:
+        print('Пользователь с таким именем или номером удален или не создан')
+        return False
+    return num
+
+
 def get_friends(user_id, token):
+    '''Получаем список друзей пользователя'''
     params = {
         'access_token': token,
         'user_id': user_id,
         'version': 5.73
         }
     response = requests.get('https://api.vk.com/method/friends.get', params)
-    try:
-        result = response.json()['response']
-    except:
-        print('Пользователь удален, заблокирован или не создан')
-        result = False
+    result = response.json()['response']
     return result
 
 
 def get_groups(user_id, token):
+    '''Получаем список групп пользователя, возвращаем в виде множества'''
     params = {
         'access_token': token,
         'user_id': user_id,
@@ -34,6 +52,9 @@ def get_groups(user_id, token):
 
 
 def find_unique(user_id, token):
+    '''Получаем список id групп целевого пользователя и список id его друзей.
+     Далее собираем множество всех групп всех друзей и возвращаем разность двух множеств
+     '''
     user_groups = get_groups(user_id, token)
     friends_groups = set()
     friends_ids = get_friends(user_id, token)
@@ -48,6 +69,8 @@ def find_unique(user_id, token):
 
 
 def get_groups_info(group_ids, token):
+    '''По заданным id групп получаем их описания, отбираем действующие группы
+    и приводим описания к тебуемому виду'''
     params = {
         'access_token': token,
         'group_ids': ','.join(list(map(str, list(group_ids)))),
@@ -56,9 +79,9 @@ def get_groups_info(group_ids, token):
         }
     response = requests.get('https://api.vk.com/method/groups.getById', params)
     try:
-        dirty_groups = response.json()['response']
+        dirty_dict_of_groups = response.json()['response']
         group_list_of_clean_dicts = []
-        for group in dirty_groups:
+        for group in dirty_dict_of_groups:
             if 'deactivated' not in group.keys():
                 clean_dict = {'name': group['name'], 'gid': group['gid'], 'members_count': group['members_count']}
                 group_list_of_clean_dicts.append(clean_dict)
@@ -68,26 +91,11 @@ def get_groups_info(group_ids, token):
     return result
 
 
-def get_user_id(screen_name, token):
-    params = {
-        'user_ids': screen_name,
-        'access_token': token,
-        'version': 5.73
-    }
-    response = requests.get('https://api.vk.com/method/users.get', params)
-    try:
-        num = response.json()['response'][0]['uid']
-    except:
-        print('Пользователя с таким именем нет')
-        return False
-    return num
-
-
 def get_and_write_json_unique_groups():
-    token = '610c39bd318cf194aad8ac01c77aea627eacc280e70f9b2091be8e8d5261fe150e6b4dfa889410e210085'
-    user_id = input('Введите id пользователя или экранное имя: ')
-    if not user_id.isdigit():
-        user_id = get_user_id(user_id, token)
+    '''Собираем итоговый список и пишем его в файлик'''
+    token = '278e52e9dc260aa5b15214b1edf6f7de2d78d3fc87936752fc6bff78accea17abb3f87251e9d1dff0f518'
+    user = input('Введите id пользователя или экранное имя: ')
+    user_id = get_user_id(user, token)
     if user_id:
         result_group_ids = find_unique(user_id, token)
         list_for_json = get_groups_info(result_group_ids, token)
