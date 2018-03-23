@@ -23,8 +23,7 @@ def get_user_id(name_or_id):
         user = call_vk('users.get', params)[0]
         if user:
             if 'deactivated' not in user:
-                num = user['uid']
-                return num
+                return user['uid']
             else:
                 print('Пользователь с таким именем или номером удален или заблокирован')
     except:
