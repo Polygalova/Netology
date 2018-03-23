@@ -8,12 +8,12 @@ def call_vk(method, params):
     params['access_token'] = '430bbae2070f1d2248b167ec0557344c8edf8b8b2b081e869dc128e1ae7f05e8cc15a7b644ed6c07b1326'
     params['version'] = '5.73'
     url = os.path.join('https://api.vk.com/method/', method)
-    response = requests.get(url, params)
-    if 'error' in response.json():
-        print('Ошибка!', response.json()['error']['error_msg'])
+    response = requests.get(url, params).json()
+    if 'error' in response:
+        print('Ошибка!', response['error']['error_msg'])
         return False
     else:
-        return response.json()['response']
+        return response['response']
 
 
 def get_user_id(name_or_id):
