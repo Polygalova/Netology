@@ -9,7 +9,7 @@ def call_vk(method, params):
     params['version'] = '5.73'
     url = os.path.join('https://api.vk.com/method/', method)
     response = requests.get(url, params)
-    if 'error' in response:
+    if 'error' in response.json():
         print('Ошибка!', response.json()['error']['error_msg'])
         return False
     else:
@@ -27,7 +27,6 @@ def get_user_id(name_or_id):
             else:
                 print('Пользователь с таким именем или номером удален или заблокирован')
     except:
-        print('Пользователь с таким именем или номером не существует')
         return False
 
 
